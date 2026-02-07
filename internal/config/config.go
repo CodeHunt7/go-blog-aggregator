@@ -13,23 +13,32 @@ type Config struct {
 	CurrentUserName string `json:"current_user_name"`
 }
 
-func Read() (Config, error) {
+func getConfigFilePath() (string, error) {
 	// 1. Получаем путь к домашней директории
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return Config{}, err
+		return "", err
 	}
-
 	// 2. Собираем полный путь к файлу
 	fullPath := filepath.Join(home, configFileName)
 
-	// 3. Читаем файл
-	fileData, err := os.ReadFile(fullPath)
+	return fullPath, nil
+}
+
+func Read() (Config, error) {
+	// 1. Получаем путь к файлу
+	filePath, err := getConfigFilePath()
 	if err != nil {
 		return Config{}, err
 	}
 
-	// 4. Декодируем JSON в структуру
+	// 2. Читаем файл
+	fileData, err := os.ReadFile(filePath)
+	if err != nil {
+		return Config{}, err
+	}
+
+	// 3. Декодируем JSON в структуру
 	var cfg Config
 	err = json.Unmarshal(fileData, &cfg)
 	if err != nil {
@@ -50,14 +59,13 @@ func (cfg *Config) SetUser(userName string) error {
 	}
 
 	// 3. Получаем путь к домашней директории и собираем путь к файлу
-	home, err := os.UserHomeDir()
+	filePath, err := getConfigFilePath()
 	if err != nil {
 		return err
 	}
-	fullPath := filepath.Join(home, configFileName)
 
 	// 4. записываем JSON в файл
-	err = os.WriteFile(fullPath, data, 0644)
+	err = os.WriteFile(filePath, data, 0644)
 	if err != nil {
 		return err
 	}
