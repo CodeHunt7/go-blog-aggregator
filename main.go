@@ -32,7 +32,7 @@ func handlerLogin(s *state, cmd command) error {
 		return err
 	}
 
-	fmt.Printf("User %s has been set", s.cfg.CurrentUserName)
+	fmt.Printf("User %s has been set\n", s.cfg.CurrentUserName)
 	return nil
 }
 

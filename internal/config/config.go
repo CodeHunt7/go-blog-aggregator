@@ -8,11 +8,13 @@ import (
 
 const configFileName = ".gatorconfig.json"
 
+// Структура файла конфигурации
 type Config struct {
 	DBURL           string `json:"db_url"`
 	CurrentUserName string `json:"current_user_name"`
 }
 
+// Функция для получения пути к файлу конфигурации
 func getConfigFilePath() (string, error) {
 	// 1. Получаем путь к домашней директории
 	home, err := os.UserHomeDir()
@@ -25,6 +27,7 @@ func getConfigFilePath() (string, error) {
 	return fullPath, nil
 }
 
+// Функция для чтения конфигурации из файла
 func Read() (Config, error) {
 	// 1. Получаем путь к файлу
 	filePath, err := getConfigFilePath()
@@ -48,6 +51,7 @@ func Read() (Config, error) {
 	return cfg, nil
 }
 
+// Функция для установки текущего пользователя
 func (cfg *Config) SetUser(userName string) error { 
 	// 1. Записываем имя в структуру
 	cfg.CurrentUserName = userName
