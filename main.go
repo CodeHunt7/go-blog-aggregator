@@ -35,9 +35,12 @@ func handlerLogin(s *state, cmd command) error {
 	// Проверяем, что пользователь есть в БД
 	ctx := context.Background()
 	_, err := s.db.GetUser(ctx, cmd.agrs[0])
-	if err != nil {
+	if err == sql.ErrNoRows {
 		return fmt.Errorf("user %s does not exist", cmd.agrs[0])
+	} else if err != nil {
+		return err
 	}
+
 
 	// Устанавливаем наше имя пользователя
 	err = s.cfg.SetUser(cmd.agrs[0])
